@@ -9,7 +9,7 @@ const sqliteFile = './database.db';
 exports.getPost = async (ref_lat, ref_long, searchRadius, type) => {
   return new Promise((resolve, reject) => {
       const db = new sqlite3.Database(sqliteFile);
-      const query = !type?`SELECT type,pid,username,title,src,timestamp,lat,long,(6371 * 2 * ASIN(SQRT(
+      const query = !type?`SELECT type,pid,username,title,src,timestamp,lat,long,desc,(6371 * 2 * ASIN(SQRT(
         POWER(SIN((RADIANS(?) - RADIANS(lat)) / 2), 2) +
         COS(RADIANS(?)) * COS(RADIANS(lat)) *
         POWER(SIN((RADIANS(?) - RADIANS(long)) / 2), 2)
@@ -42,12 +42,12 @@ exports.getPost = async (ref_lat, ref_long, searchRadius, type) => {
  * @param {string} lat - The Latitude
  * @param {string} long - The Longtitude
  **/
-exports.addPost = async (type,username,title,src,lat,long) => {
+exports.addPost = async (type,username,title,src,lat,long,desc) => {
   return new Promise((resolve, reject) => {
       //TODO : before adding post,check if user is correct by comparing password hash along with it
       const db = new sqlite3.Database(sqliteFile);
-      const query = `INSERT INTO posts (type,username,title,src,lat,long,timestamp) VALUES (?,?,?,?,?,?,?);`;
-      db.all(query, [type, username,title,src,lat,long,Math.floor(Date.now()/1000)], (err, rows) => {
+      const query = `INSERT INTO posts (type,username,title,src,lat,long,timestamp,desc) VALUES (?,?,?,?,?,?,?,?);`;
+      db.all(query, [type, username,title,src,lat,long,Math.floor(Date.now()/1000),desc], (err, rows) => {
         if (err) {
           reject(err);
         } else {
@@ -108,6 +108,7 @@ exports.createTable = () => {
   "timestamp" INTEGER NOT NULL,
   "lat" REAL NOT NULL,
   "long"  REAL NOT NULL,
+  "desc"  TEXT,
   FOREIGN KEY("username") REFERENCES "users"("username"),
   PRIMARY KEY("pid" AUTOINCREMENT)
 );`;
