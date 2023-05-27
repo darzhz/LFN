@@ -3,6 +3,7 @@ import Card from './Card.svelte';
 import { onMount } from 'svelte';
 import { fade,fly } from 'svelte/transition';
 import { createEventDispatcher, onDestroy } from 'svelte';
+import Topbar from './Topbar.svelte';
 let result = [];
 let radius = 100;
 let mylat = 51.51337312257464;
@@ -32,10 +33,9 @@ const fetchPosts = async (radius) =>{
 const dispatch = createEventDispatcher();
 const close = () => dispatch('close');
 </script>
-
 <div class="scrollwindow" in:fly="{{ y: 100, duration: 300 }}" out:fly="{{ x: -100, duration: 300 }}">
 <div id="topbar">
-<button class="button-86" on:click={close}>Back</button>
+<Topbar on:close={close}>Explore</Topbar>
 <input type="number" name="SearchRadius" min="10" max="5000" bind:value={radius}>
 </div>
 {#if result.length > 0}

@@ -33,7 +33,7 @@
       return  Math.round(elapsed / msPerYear) + ' years ago';
     }
 }
-let link = null;
+let link = "https://api.dicebear.com/6.x/notionists/svg?seed="+username;
 </script>
 <div class="container" bind:this="{post}">
   <div class="card" in:fly="{{ y: 100, duration: 300 }}" out:fade="{{ duration: 300 }}">
@@ -42,13 +42,13 @@ let link = null;
     </div>
     <div class="card-body">
       <h4>
-        {title} - {distence}km away
+        {title}{#if distence} - {Math.round(distence*100)/100}km away{/if}
       </h4>
       <p>
        {desc}
       </p>
       <div class="user">
-        <img src="favicon.png" alt="user" />
+        <img src={link} alt="user" />
         <div class="user-info">
             <h5>@{username}</h5>
           {#if type=="LOST"}
@@ -57,7 +57,7 @@ let link = null;
           <span class="tag tag-teal">FOUND</span>
           {/if}
           <small>{calcTimeDiff(now,last_updated.getTime())}</small>
-          <small>{lat},{long}</small>
+          <small>{Math.round(lat * 100) / 100},{Math.round(long * 100) / 100}</small>
         </div>
       </div>
     </div>
@@ -130,12 +130,17 @@ let link = null;
   width: 40px;
   height: 40px;
   margin-right: 10px;
-  background-color: var(--pri);
+  background-color: var(--tri);
 }
 .user-info h5 {
   margin: 0;
 }
 .user-info small {
   color: #545d7a;
+}
+@media (min-width: 1024px) {
+  .card {
+    width: 50vw;
+  }
 }
 </style>

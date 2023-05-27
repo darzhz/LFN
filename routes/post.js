@@ -23,24 +23,21 @@ router.post("/getPost",async (req, res, next) => {
   let result = await model.getPost(data.lat, data.long, data.searchRadius, data.type);
   res.send(result);
 });
-router.post("/addPost",upload.array('images'),async (req, res,  next) =>{
-   /** req.body format example:
-   *  {
-   * "type": "LOST",
-   * "username": "admin",
-   * "title": "50km",
-   * "src": "[img.png]",
-   * "lat": 34.1100,
-   * "long": -118.3000
-   *  }
-   ***/
+const authenticateMiddleware = (req, res, next) => {
+  if (req.session.username) {
+    next();
+  } else {
+    res.send(JSON.stringify({status:"UNAUTHENTICATED"}));
+  }
+};
+router.post("/addPost",authenticateMiddleware, upload.array('images'),async (req, res,  next) =>{
   let data = req.body;
   const newFileNames = req.fileNames;
-  // Access the array of new file names and perform desired actions
   console.log('New file names:', newFileNames);
-  //console.log(data);
-  let rowsAffected = await model.addPost(data.type,data.username?data.username:'admin',data.title,JSON.stringify(newFileNames),data.lat,data.long,data.desc);
+  let rowsAffected = await model.addPost(data.type,req.session.username,data.title,JSON.stringify(newFileNames),data.lat,data.long,data.desc);
   res.send(rowsAffected);
-  //res.send(data.title+" added");
+});
+router.get('/getUserPost',authenticateMiddleware,async (req, res, next) =>{
+  res.send(await model.getUserPosts(req.session.username));
 })
 module.exports = router;

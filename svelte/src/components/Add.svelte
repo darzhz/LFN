@@ -9,8 +9,9 @@
 	let long;
 	let images = [];
 	import Minimap from './Minimap.svelte';
-	import { fade,fly } from 'svelte/transition';
+	import { fade,fly,scale } from 'svelte/transition';
 	import { createEventDispatcher, onDestroy } from 'svelte';
+  import { onMount } from 'svelte';
 	$: if (files) {
 		console.log(files);
 
@@ -21,7 +22,7 @@
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('close');
 	const handleMarkerSet = (event) => {
-         lat = event.detail.lat;
+        lat = event.detail.lat;
     	 long = event.detail.lng;
   	}
 	const handleSubmit = async () => {
@@ -42,10 +43,19 @@
         method: 'POST',
         body: formData,
       });
-
+      let result = response.json();
+      result.then((resp) =>{
+      if(resp.status == "UNAUTHENTICATED"){
+        dispatch('loginrequired');
+      }
+      if(resp.status == "SUCCESSFUL"){
+        close();
+      }
+    });
       // Handle the server response
     } catch (error) {
       // Handle errors
+      console.log(error);
     }
   };
   const useCurrentLocation = () =>{
@@ -64,8 +74,14 @@
 }
   }
 </script>
-<div in:fly="{{ y: 100, duration: 300 }}" out:fly="{{ x: -100, duration: 300 }}">
-	<button class="button-86" on:click={close}>Back</button>
+<div in:scale out:scale>
+  <div class="topMenu">
+	<div class="back" on:click={close}><span class="material-symbols-rounded">
+arrow_back_ios
+</span></div>
+  <div id="title">New Post</div>
+</div>
+<div class="container1">
 	<form   on:submit|preventDefault={handleSubmit}>
 		<div class="container">
   <div class="row">
@@ -100,7 +116,7 @@
   <div id="setMap">
   <Minimap on:markerSet={handleMarkerSet} {lat} {long}/>
   <div>
-  <p>Currently set :<br>lat : {lat},<br>long : {long}</p>
+  <p>Currently set :<br>lat : {Math.round(lat)},<br>long : {Math.round(long)}</p>
   <button on:click={useCurrentLocation}>Use Current GPS loaction</button>
   </div>
   </div>
@@ -111,6 +127,7 @@
 </div>
 	</form>
 </div>
+</div>
 <style>
 
 * {
@@ -120,9 +137,32 @@
   width:100%;
 }
 #setMap{
-	display: flex;
+	  display: flex;
+    flex-direction: column-reverse;
     justify-content: center;
     align-items: center;
+    border-radius: 15px;
+/*    box-shadow: 0 4px 6px rgba(32,33,36,.28);*/
+    width: 50vw;
+    min-width: 300px;
+}
+.back{
+    height: 28px;
+    width: 28px;
+    margin-left: 10px;
+    margin-top: 10px;
+    color: var(--tri);
+}
+#title{
+    position: absolute;
+    width: fit-content;
+    left: 0;
+    top: 3px;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: poppins,sans-serif;
+    color: var(--tri);
 }
 input[type=text], textarea {
     width: 95%;
@@ -131,20 +171,22 @@ input[type=text], textarea {
     resize: vertical;
     outline:none;
     border-radius: 15px;
-    background-color: #ffffff94;
-    box-shadow: 0px 0px 6px 0px #00000075;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(32,33,36,.28);
 }
 input[type=file] {
-	width: 95%;
+	  width: 95%;
     text-align: center;
     border-radius: 13px;
+    background-color: white;
+    color: var(--tri);
 }
 select {
 	width: 95%;
     text-align: center;
     border-radius: 15px;
-    background-color: #ffffff94;
-    box-shadow: 0px 0px 6px 0px #00000075;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(32,33,36,.28);
 }
 input[type=submit] {
     background-color: #19c384;
@@ -153,7 +195,13 @@ input[type=submit] {
     border-radius: 8px;
     cursor: pointer;
     width: 97px;
-    margin-bottom: 50px;
+    margin-bottom: 70px;
+}
+input::placeholder{
+  color: var(--tri);
+}
+textarea::placeholder{
+  color: var(--tri);
 }
 button {
 	background-color: #19c384;
@@ -169,6 +217,13 @@ button:hover {
 input[type=submit]:hover {
   background-color: #04AA6D;
 }
+input::file-selector-button {
+    color: white;
+    padding: 0.5em;
+    border: none;
+    border-radius: 13px;
+    background-color: var(--tri);
+}
 #fname,#insta{
   text-align: center;
 }
@@ -179,6 +234,11 @@ input[type=submit]:hover {
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+.container1 {
+  background-color: var(--tri);
+  color: white;
+  text-align: right;
 }
 .col-25 {
   margin-top: 6px;
@@ -193,6 +253,7 @@ input[type=submit]:hover {
     /*width: 100%;*/
     margin-top: 0;
   }
+
 }
 @media screen and (min-width: 600px) {
  input[type=text], textarea {
@@ -204,7 +265,11 @@ input[type=submit]:hover {
   select {
   	width: 50vw;
   }
+    #setMap{
+    flex-direction: row;
+  }
 }
+
 
 
 </style>

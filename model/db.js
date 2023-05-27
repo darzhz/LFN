@@ -4,8 +4,112 @@ const sqliteFile = './database.db';
  * tables we have                                                 a
  *    -posts    [type,pid,username,title,src,timestamp,lat,long]  R 
  *    -users    [username,email,saltedhash]                       z
- *    -messages [fuid,tuid,message]                               H
+ *    -messages [fuid,tuid,message,pid]                           H
  *****************************************************************/
+exports.checkAvailable = async (username) =>{
+  return new Promise((resolve, reject) => {
+      const db = new sqlite3.Database(sqliteFile);
+      const query = `SELECT * FROM users WHERE username=?;`;
+      db.all(query, [username], (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          db.close(err => {
+            if (err) {
+              console.error('Error closing SQLite database connection:', err);
+            }
+            resolve(rows);
+          });
+        }
+      });
+  });
+}
+exports.getMessages = async(pid,from,to) => {
+ return new Promise((resolve, reject) => {
+    const db = new sqlite3.Database(sqliteFile);
+    const query = `SELECT * FROM messages WHERE pid = ? AND (fuid = ? OR fuid = ?)`;
+    db.all(query, [pid, from, to], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      const messages = rows.map(row => {
+        const { fuid, tuid, message, timestamp } = row;
+        const message_type = (fuid === from) ? 'outgoing' : 'incoming';
+        return {
+          type: message_type,
+          content: message,
+          timestamp: timestamp
+        };
+      });
+
+      resolve(messages);
+
+    });
+
+    db.close();
+  });
+}
+exports.setMessages = async(pid,from,to,message)=>{
+  return new Promise((resolve, reject) => {
+      const db = new sqlite3.Database(sqliteFile);
+      const query = `INSERT INTO messages (pid, fuid, tuid, message, timestamp) VALUES (?, ?, ?, ?, ?);`;
+      db.all(query, [pid, from, to, message, Date.now()], (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          db.close(err => {
+            if (err) {
+              console.error('Error closing SQLite database connection:', err);
+            }
+            resolve(JSON.stringify({status:"SENT"}));
+          });
+        }
+      });
+  });
+}
+exports.getUserPosts = async(username) =>{
+  return new Promise((resolve, reject) => {
+      const db = new sqlite3.Database(sqliteFile);
+      const query = `SELECT * FROM posts where username=?;`;
+      db.all(query, [username], (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          db.close(err => {
+            if (err) {
+              console.error('Error closing SQLite database connection:', err);
+            }
+            resolve(rows);
+          });
+        }
+      });
+  });
+}
+exports.addNewUser = async(username, email, hashedPassword)=>{
+  let checkAvailable = await exports.checkAvailable(username);
+  if(checkAvailable.length>0){
+    return null;
+  }else{
+  return new Promise((resolve, reject) => {
+      const db = new sqlite3.Database(sqliteFile);
+      const query = `INSERT INTO users (username, email, saltedhash) VALUES (?, ?, ?);`;
+      db.all(query, [username, email, hashedPassword], (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          db.close(err => {
+            if (err) {
+              console.error('Error closing SQLite database connection:', err);
+            }
+            resolve(rows);
+          });
+        }
+      });
+  });
+  }
+}
 exports.getPost = async (ref_lat, ref_long, searchRadius, type) => {
   return new Promise((resolve, reject) => {
       const db = new sqlite3.Database(sqliteFile);
@@ -56,7 +160,7 @@ exports.addPost = async (type,username,title,src,lat,long,desc) => {
             if (err) {
               console.error('Error closing SQLite database connection:', err);
             }
-            resolve(rows);
+            resolve(JSON.stringify({status:"SUCCESSFUL"}));
           });
         }
       });

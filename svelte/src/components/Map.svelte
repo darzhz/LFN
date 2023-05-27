@@ -2,6 +2,7 @@
 	import * as L from 'leaflet';
   	import 'leaflet/dist/leaflet.css';
     import { onMount } from 'svelte';
+    import { scale } from 'svelte/transition';
   	let map;
 	let stamen = 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png';
   let carto = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png';
@@ -59,24 +60,25 @@ onMount(() => {
     return m;
   }
 </script>
-
+<div in:scale out:scale>
 <div id="indicator">
   <small>{Math.round(mylat * 100) / 100},{Math.round(mylong * 100) / 100}</small>
 </div>
 <div id="map-container" style="height: 100vh; width: 100vw;"></div>
-
+</div>
 <style type="text/css">
   #indicator {
-    position: absolute;
+   position: absolute;
     z-index: 1001;
-    left: 83vw;
-    top: 1vw;
-    background-color: #000000ba;
-    color: white;
+    min-width: 2px;
+    top: 3vw;
+    background-color: #ffffff;
+    color: var(--tri);
     font-family: poppins, sans-serif;
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 15px;
     box-shadow: 0px 0px 1px 1px #000000d1;
+    right: 0;
   }
 </style>
