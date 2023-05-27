@@ -69,6 +69,9 @@ body {
   justify-content: center;
   height: 100dvh;
 }
+a{
+  color: white;
+}
 
 .form {
     background-color: var(--tri);
@@ -77,7 +80,6 @@ body {
     height: 500px;
     padding: 20px;
     width: 320px;
-    backdrop-filter: blur(4px);
 }
 
 .title {

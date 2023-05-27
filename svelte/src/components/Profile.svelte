@@ -29,11 +29,7 @@ const close = () => dispatch('close');
       <div class="title" on:click={()=> logout()}>Logout</div>
       <h2> Hey!,</h2>
       <h2>{username}</h2>
-  <div class="actions">
-    <button><i class="far fa-heart"></i></button>
-    <button><i class="far fa-envelope"></i></button>
-    <button><i class="fas fa-user-friends"></i></button>
-  </div></div>
+  </div>
  
   </div>
 </div>

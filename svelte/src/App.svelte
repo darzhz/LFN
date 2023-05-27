@@ -4,6 +4,7 @@
 	import Add from './components/Add.svelte';
 	import Acc from './components/Acc.svelte';
 	import Chat from './components/Chat.svelte';
+	import InstantChat from './components/Chatbox.svelte';
 	let toggle = {
 		showMap:true,
 		showAdd:false,
@@ -22,6 +23,15 @@
 		arr.forEach((x) =>(toggle[x] = false))
 		toggle[elem] = true;
 	}
+	let showInstantChat = false;
+	let Iuser = null;
+	let Ipid = null;
+	const handleOpen = (event) => {
+		feed = false;
+		Iuser = event.detail.username;
+		Ipid = event.detail.pid
+		showInstantChat = true;
+	}
 </script>
 <svelte:head>
   <title>LFN</title>
@@ -32,7 +42,7 @@
 	<Map/>
 	{/if}
 	{#if feed}
-	<Feed on:close="{() =>{ toggle['feed'] = false;toggle['showMap'] = true}}"/>
+	<Feed on:close="{() =>{ toggle['feed'] = false;toggle['showMap'] = true}}" on:instantChat={handleOpen}/>
 	{/if}
 	{#if showAdd}
 	<Add on:close="{() =>{ toggle['showAdd'] = false;toggle['showMap'] = true}}" on:loginrequired="{() => handleViewChange('showAcc')}"/>
@@ -41,7 +51,10 @@
 	<Acc on:close="{() =>{ toggle['showAcc'] = false;toggle['showMap'] = true}}"/>
 	{/if}
 	{#if showChat}
-	<Chat on:close="{() =>{ toggle['showChat'] = false;toggle['showMap'] = true}}"/>
+	<Chat on:close="{() =>{ toggle['showChat'] = false;toggle['showMap'] = true}}" on:loginrequired="{() => handleViewChange('showAcc')}"/>
+	{/if}
+	{#if showInstantChat}
+	<InstantChat chatee={Iuser} pid={Ipid} on:close="{() =>{ showInstantChat = false;toggle['showMap'] = true}}" on:loginrequired="{() => handleViewChange('showAcc')}"/>
 	{/if}
 </main>
 <div id="navi">

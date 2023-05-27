@@ -40,7 +40,7 @@ const close = () => dispatch('close');
 </div>
 {#if result.length > 0}
     {#each result as data}
-		    <Card title={data.title} username={data.username} timestamp={data.timestamp*1000} type={data.type} lat={data.lat} long={data.long} distence={data.distance} desc={data.desc}/>
+		    <Card title={data.title} pid={data.pid} username={data.username} timestamp={data.timestamp*1000} type={data.type} lat={data.lat} long={data.long} distence={data.distance} desc={data.desc} images={JSON.parse(data.src)} on:instantChat/>
     {/each}
 {/if}
 </div>
@@ -70,5 +70,20 @@ button{
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+input[type=number]{
+  padding: 0;
+    border: none;
+    border-radius: 15px;
+    text-align: center;
+    position: absolute;
+    top: 10px;
+    right: 9px;
+    color: var(--tri);
+    /* content: 'km'; */
+    box-shadow: inset 0px 0px 5px 0px #0000004a;
+}
+input[type=number]::after{
+  content: 'KM';
 }
 </style>

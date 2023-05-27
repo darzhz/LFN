@@ -19,7 +19,9 @@ app.use(session({
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 const build = path.join(__dirname, "svelte/public");
+const uploads = path.join(__dirname,"uploads")
 app.use(express.static(build));
+app.use('/images',express.static(uploads));
 app.use('/posts',require('./routes/post.js'));
 app.use('/register',require('./routes/register.js'));
 app.use('/login',require('./routes/login.js'));

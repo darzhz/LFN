@@ -16,7 +16,7 @@
   let raw = JSON.stringify({
     "lat": mylat,
     "long": mylong,
-    "searchRadius": 20
+    "searchRadius": radius
   });
   let requestOptions = {
     method: 'POST',
@@ -41,6 +41,7 @@
 }
 onMount(() => {
     map = createMap('map-container');
+    fetchPosts(20);
   });
 
   function createMap(containerId) {
@@ -54,7 +55,7 @@ onMount(() => {
       const center = m.getCenter();
       mylat = center.lat;
       mylong = center.lng;
-      fetchPosts(); // Invoke the fetchPosts function
+      fetchPosts(20); // Invoke the fetchPosts function
     });
 
     return m;

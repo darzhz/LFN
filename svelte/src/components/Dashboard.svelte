@@ -22,7 +22,7 @@
 	</div>
 	{#if result.length > 0}
     {#each result as data}
-		    <Card title={data.title} username={data.username} timestamp={data.timestamp*1000} type={data.type} lat={data.lat} long={data.long} desc={data.desc}/>
+		    <Card title={data.title} username={data.username} timestamp={data.timestamp*1000} type={data.type} lat={data.lat} pid={data.pid} images={JSON.parse(data.src)} long={data.long} desc={data.desc} on:refetch={fetchPosts}/>
     {/each}
 	{/if}
 	</div>

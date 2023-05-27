@@ -4,7 +4,7 @@
   import { fly } from 'svelte/transition';
   export let pid = 10;
   export let chatee = 'roomie';
-  export let typed = '';
+  let typed = '';
   let chat;
   let result = [];
   const fetchChat = async () =>{
@@ -48,13 +48,15 @@ const sendMessage = async () =>{
       fetchChat();
     }else{
       typed = 'unable to send!';
+      if(message.status == "UNAUTHENTICATED")
+        dispatch('loginrequired');
     }
     chat.scrollTo(0,chat.scrollHeight);
 }
 let link = "https://api.dicebear.com/6.x/notionists/svg?seed="+chatee;
   </script>
   <Topbar on:close>Chat</Topbar>
-  <div id="chatboxContainer">
+  <div id="chatboxContainer" in:fly>
   <div class="chat">
     <div class="contactbar">
       <div class="pic inco">
@@ -67,7 +69,7 @@ let link = "https://api.dicebear.com/6.x/notionists/svg?seed="+chatee;
      {#if result.length > 0}
     <div class="messages" id="chat" bind:this={chat} in:fly out:fly>
       <div class="time">
-        Today at 11:41
+        Conversation Started at {result[0].timestamp}
       </div>
         {#each result as data}
           {#if data.type=="outgoing"}

@@ -6,6 +6,37 @@ const sqliteFile = './database.db';
  *    -users    [username,email,saltedhash]                       z
  *    -messages [fuid,tuid,message,pid]                           H
  *****************************************************************/
+exports.deletePost = async (pid) => {
+   return new Promise((resolve, reject) => {
+    const db = new sqlite3.Database(sqliteFile);
+    const deleteMessagesQuery = `DELETE FROM messages WHERE pid = ?;`;
+    const deletePostsQuery = `DELETE FROM posts WHERE pid = ?;`;
+    
+    db.serialize(() => {
+      db.run(deleteMessagesQuery, pid, (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        
+        db.run(deletePostsQuery, pid, (err) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          
+          db.close((err) => {
+            if (err) {
+              console.error('Error closing SQLite database connection:', err);
+            }
+            
+            resolve(JSON.stringify({ status: "DELETED" }));
+          });
+        });
+      });
+    });
+  });
+}
 exports.checkAvailable = async (username) =>{
   return new Promise((resolve, reject) => {
       const db = new sqlite3.Database(sqliteFile);
@@ -45,6 +76,47 @@ exports.getMessages = async(pid,from,to) => {
       });
 
       resolve(messages);
+
+    });
+
+    db.close();
+  });
+}
+exports.getMessageList = async(username) => {
+ return new Promise((resolve, reject) => {
+    const db = new sqlite3.Database(sqliteFile);
+    const query = `SELECT USERS.username, POSTS.pid, MESSAGES.message, MESSAGES.timestamp AS last_timestamp
+FROM (
+  SELECT MESSAGES.fuid, MESSAGES.tuid, MAX(MESSAGES.timestamp) AS max_timestamp
+  FROM MESSAGES
+  WHERE MESSAGES.fuid = ? OR MESSAGES.tuid = ?
+  GROUP BY MESSAGES.fuid, MESSAGES.tuid
+) AS latest_messages
+LEFT JOIN MESSAGES ON (
+  (MESSAGES.fuid = latest_messages.fuid AND MESSAGES.tuid = latest_messages.tuid)
+  OR (MESSAGES.fuid = latest_messages.tuid AND MESSAGES.tuid = latest_messages.fuid)
+) AND MESSAGES.timestamp = latest_messages.max_timestamp
+LEFT JOIN USERS ON (MESSAGES.fuid = USERS.username OR MESSAGES.tuid = USERS.username)
+LEFT JOIN POSTS ON MESSAGES.pid = POSTS.pid
+WHERE USERS.username <> ?;
+`;
+    db.all(query, [username, username, username], (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      const lastMessage = rows.map(row => {
+        const { username, pid, message, last_timestamp } = row;
+        return {
+          username: username,
+          pid: pid,
+          message:message,
+          timestamp: last_timestamp
+        };
+      });
+
+      resolve(lastMessage);
 
     });
 

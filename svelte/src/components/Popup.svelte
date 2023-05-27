@@ -36,8 +36,10 @@ body {
     color: #fff;
     text-align: center;
     border-radius: 20px;
-    padding: 30px 30px 70px;
+    /* padding: 30px 30px 70px; */
+    padding-bottom: 50px;
     position: absolute;
+    top: calc(50vh - 200px);
     z-index: 1;
     box-shadow: 0px 0px 6px 0px black;
 }

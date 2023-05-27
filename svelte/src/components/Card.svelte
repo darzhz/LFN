@@ -1,6 +1,9 @@
 <script>
   import { fade,fly } from 'svelte/transition';
-  export let title = "unable to fetch data from server"
+  import { createEventDispatcher } from 'svelte';
+  import Carousel from './Carousel.svelte';
+  import { isLoggedIn,user } from '../store.js';
+  export let title = "unable to fetch data from server";
   export let username = null;
   export let lat;
   export let timestamp;
@@ -9,9 +12,11 @@
   export let pid;
   export let desc;
   export let type = "LOST";
+  export let images = [];
   let post;
   let last_updated = new Date(timestamp);
   let now  = Date.now();
+  const dispatch =createEventDispatcher();
   function calcTimeDiff(current,previous){
     let msPerMinute = 60 * 1000;
     let msPerHour = msPerMinute * 60;
@@ -33,16 +38,39 @@
       return  Math.round(elapsed / msPerYear) + ' years ago';
     }
 }
+const gotoChat = async (username,pid) =>{
+  dispatch('instantChat',{username,pid});
+  console.log('event dispatched '+username);
+}
+const deletePost = async (pid) =>{
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  let raw = JSON.stringify({
+    "pid": pid
+  });
+  let requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+  const res = await fetch('/posts/deletePost',requestOptions);
+  let result = await res.json();
+  if(result.status=='DELETED'){
+    dispatch('refetch');
+  }
+}
 let link = "https://api.dicebear.com/6.x/notionists/svg?seed="+username;
 </script>
 <div class="container" bind:this="{post}">
   <div class="card" in:fly="{{ y: 100, duration: 300 }}" out:fade="{{ duration: 300 }}">
     <div class="card-header">
       <!-- <img src="bannerwhite.png" alt="banner" /> -->
+      <Carousel images={images}/>
     </div>
     <div class="card-body">
       <h4>
-        {title}{#if distence} - {Math.round(distence*100)/100}km away{/if}
+        #{pid}| {title}{#if distence} - {Math.round(distence*100)/100}km away{/if}
       </h4>
       <p>
        {desc}
@@ -50,7 +78,13 @@ let link = "https://api.dicebear.com/6.x/notionists/svg?seed="+username;
       <div class="user">
         <img src={link} alt="user" />
         <div class="user-info">
-            <h5>@{username}</h5>
+            <h5>@{username}
+              {#if $isLoggedIn && $user == username}
+              <span class="tag" on:click={()=>deletePost(pid)}>Delete</span>
+              {:else}
+              <span class="tag" on:click={()=>gotoChat(username,pid)}>Send Message</span>
+              {/if}
+            </h5>
           {#if type=="LOST"}
           <span class="tag tag-pink">LOST</span>
           {:else}
@@ -68,6 +102,10 @@ let link = "https://api.dicebear.com/6.x/notionists/svg?seed="+username;
 * {
   box-sizing: border-box;
 }
+h4 {
+  color: white;
+  text-shadow: 0px 1px 4px black;
+}
 .container{
 	display: flex;
 	justify-content: center;
@@ -82,11 +120,9 @@ let link = "https://api.dicebear.com/6.x/notionists/svg?seed="+username;
 }
 .card-header {
   width: 100%;
-  height: 100px;
-  background-image: url('/bannerwhite.png');
-  background-size: cover;
-  background-position: center;
-/*  object-fit: cover;*/
+    height: 165px;
+    background-size: cover;
+    background-position: center;
 }
 .card-body {
   display: flex;

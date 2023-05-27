@@ -2,10 +2,11 @@
   let username;
   let email;
   let password;
-  let uPlaceholder = 'username';
   import { createEventDispatcher, onDestroy } from 'svelte';
   import { fly } from 'svelte/transition';
+  import Popup from './Popup.svelte';
   let dispatch = createEventDispatcher();
+  let showPopup = false;
   const close = () => dispatch('close');
   const switchView = () => dispatch('switchView');
   const handleSubmit = async () => {
@@ -29,21 +30,25 @@
   if(result.status == "OK"){
     dispatch('switchView');
   }else{
-    uPlaceholder = result.status;
+    showPopup = true;
   }
-  }
-  const changeText = () => {
-    uPlaceholder = 'Username';
   }
 </script>
 <div>
+   {#if showPopup}
+        <div class="comp" in:scale out:scale>
+          <Popup on:close={()=>{showPopup = false;}}>
+           This username is Unavailable,please use another!
+          </Popup>
+        </div>
+      {/if}
 <form class="form" on:submit|preventDefault={handleSubmit}>
       <div class="title">Welcome</div>
       <div class="subtitle">Let's create your account!</div>
       <div class="input-container ic1">
-        <input id="firstname" class="input" type="text" placeholder=" " onchange:value={() => {changeText()}} bind:value={username} required />
+        <input id="firstname" class="input" type="text" placeholder=" " bind:value={username} required />
         <div class="cut"></div>
-        <label for="firstname" class="placeholder">{uPlaceholder}</label>
+        <label for="firstname" class="placeholder"></label>
       </div>
       <div class="input-container ic2">
         <input id="lastname" class="input" type="text" placeholder=" " bind:value={email} required />
@@ -67,7 +72,9 @@ body {
   justify-content: center;
   height: 100dvh;
 }
-
+a {
+  color:white;
+}
 .form {
     background-color: var(--tri);
     border-radius: 20px;
@@ -75,7 +82,6 @@ body {
     height: 500px;
     padding: 20px;
     width: 320px;
-    backdrop-filter: blur(4px);
 }
 
 .title {

@@ -34,7 +34,12 @@ router.post("/addPost",authenticateMiddleware, upload.array('images'),async (req
   let data = req.body;
   const newFileNames = req.fileNames;
   console.log('New file names:', newFileNames);
-  let rowsAffected = await model.addPost(data.type,req.session.username,data.title,JSON.stringify(newFileNames),data.lat,data.long,data.desc);
+  let result = await model.addPost(data.type,req.session.username,data.title,JSON.stringify(newFileNames),data.lat,data.long,data.desc);
+  res.send(result);
+});
+router.post("/deletePost",authenticateMiddleware,async (req, res,  next) =>{
+  let data = req.body;
+  let rowsAffected = await model.deletePost(data.pid);
   res.send(rowsAffected);
 });
 router.get('/getUserPost',authenticateMiddleware,async (req, res, next) =>{

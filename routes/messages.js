@@ -22,4 +22,9 @@ router.post('/sendMessages', authenticateMiddleware,async (req, res) => {
   const result = await model.setMessages(data.pid, user, data.username,data.message);
   res.send(result);
 });
+router.get('/getMessageList', authenticateMiddleware,async (req, res) => {
+  const user = req.session.username;
+  const result = await model.getMessageList(user);
+  res.send(result);
+});
 module.exports = router;
