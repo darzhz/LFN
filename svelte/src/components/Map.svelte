@@ -41,13 +41,20 @@
   }
 }
 onMount(async () => {
-    if (navigator.geolocation) {
+    if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           mylat = position.coords.latitude;
           mylong = position.coords.longitude;
           map =  createMap('map-container');
           fetchPosts(20);
+        },(err) => {
+           if (err.code == err.PERMISSION_DENIED){
+             mylat = 9.1748;
+             mylong =  76.5013;
+             map = createMap('map-container');
+             fetchPosts(20);
+           }
         });
     }else {
       mylat = 9.1748;

@@ -3,15 +3,25 @@
   import Topbar from './Topbar.svelte';
   import { fly,scale } from 'svelte/transition';
   import { createEventDispatcher } from 'svelte';
+  import { isLoggedIn,user } from '../store.js'
   const dispatch = createEventDispatcher();
   let result = [];
   const fetchChat = async () =>{
   const res = await fetch('/messages/getMessageList');
   result = await res.json();
-  if(result.status)
-    if(result.status=="UNAUTHENTICATED")
+  if(result.status){
+    if(result.status=="UNAUTHENTICATED"){
       dispatch('loginrequired');
+    }
+  }else{
+      if(!$isLoggedIn){
+        isLoggedIn.update((prev) => prev = true);
+        const res = await fetch('/checkLogin');
+        let result = await res.json();
+        user.update((prev) => prev = result.user);
+      }
   }
+}
   function calcTimeDiff(current,previous){
     console.log(current,previous)
     let msPerMinute = 60 * 1000;

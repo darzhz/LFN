@@ -1,14 +1,12 @@
   <script>
-  import { onMount } from 'svelte';
+  import { onMount,afterUpdate } from 'svelte';
   import Topbar from './Topbar.svelte';
   import { fly } from 'svelte/transition';
-   import * as animateScroll from "svelte-scrollto";
   export let pid = 10;
   export let chatee = 'roomie';
   let typed = '';
   let chat;
   let result = [];
-  $: animateScroll.scrollToBottom();
   const fetchChat = async () =>{
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -26,18 +24,8 @@
   result = await res.json();
 }
 onMount(async () => {
-  animateScroll.setGlobalOptions({
-  offset: 200,
-  container: chat,
-  onStart: (element, offset) => {
-    if(element) {
-      console.log("Start scrolling to element:", element);
-    } else if(offset) {
-      console.log("Start scrolling to page offset: (${offset.x}, ${offset.y})");
-    }
-  }
-})
   fetchChat();
+  scrollChatToBottom();
 });
 const sendMessage = async () =>{
   let myHeaders = new Headers();
@@ -67,6 +55,11 @@ const sendMessage = async () =>{
 }
 let link = "https://api.dicebear.com/6.x/notionists/svg?seed="+chatee;
 setInterval(fetchChat,1000);
+const scrollChatToBottom = () => {
+    if (chat) {
+      chat.scrollTop = chat.scrollHeight;
+    }
+  }
   </script>
   <Topbar on:close>Chat</Topbar>
   <div id="chatboxContainer" in:fly>

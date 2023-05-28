@@ -6,8 +6,8 @@ import { createEventDispatcher, onDestroy } from 'svelte';
 import Topbar from './Topbar.svelte';
 let result = [];
 let radius = 100;
-export let mylat;
-export let mylong;
+let mylat;
+let mylong;
 $: radius,fetchPosts(radius);
 onMount(async () => {
   //fetchPosts();
