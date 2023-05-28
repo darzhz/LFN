@@ -87,20 +87,16 @@ exports.getMessageList = async(username) => {
     const db = new sqlite3.Database(sqliteFile);
     const query = `SELECT USERS.username, POSTS.pid, MESSAGES.message, MESSAGES.timestamp AS last_timestamp
 FROM (
-  SELECT MESSAGES.fuid, MESSAGES.tuid, MAX(MESSAGES.timestamp) AS max_timestamp
+  SELECT MESSAGES.pid, MAX(MESSAGES.timestamp) AS max_timestamp
   FROM MESSAGES
   WHERE MESSAGES.fuid = ? OR MESSAGES.tuid = ?
-  GROUP BY MESSAGES.fuid, MESSAGES.tuid
+  GROUP BY MESSAGES.pid
 ) AS latest_messages
-LEFT JOIN MESSAGES ON (
-  (MESSAGES.fuid = latest_messages.fuid AND MESSAGES.tuid = latest_messages.tuid)
-  OR (MESSAGES.fuid = latest_messages.tuid AND MESSAGES.tuid = latest_messages.fuid)
-) AND MESSAGES.timestamp = latest_messages.max_timestamp
+LEFT JOIN MESSAGES ON MESSAGES.pid = latest_messages.pid AND MESSAGES.timestamp = latest_messages.max_timestamp
 LEFT JOIN USERS ON (MESSAGES.fuid = USERS.username OR MESSAGES.tuid = USERS.username)
 LEFT JOIN POSTS ON MESSAGES.pid = POSTS.pid
-WHERE USERS.username <> ?;
-`;
-    db.all(query, [username, username, username], (err, rows) => {
+WHERE USERS.username <> ?;`;
+    db.all(query,[username,username,username], (err, rows) => {
       if (err) {
         reject(err);
         return;
@@ -189,11 +185,11 @@ exports.getPost = async (ref_lat, ref_long, searchRadius, type) => {
         POWER(SIN((RADIANS(?) - RADIANS(lat)) / 2), 2) +
         COS(RADIANS(?)) * COS(RADIANS(lat)) *
         POWER(SIN((RADIANS(?) - RADIANS(long)) / 2), 2)
-    ))) AS distance FROM posts WHERE distance <= ?;`:`SELECT type,pid,username,title,src,timestamp,lat,long,(6371 * 2 * ASIN(SQRT(
+    ))) AS distance FROM posts WHERE distance <= ? ORDER BY distance ASC;`:`SELECT type,pid,username,title,src,timestamp,lat,long,(6371 * 2 * ASIN(SQRT(
         POWER(SIN((RADIANS(?) - RADIANS(lat)) / 2), 2) +
         COS(RADIANS(?)) * COS(RADIANS(lat)) *
         POWER(SIN((RADIANS(?) - RADIANS(long)) / 2), 2)
-    ))) AS distance FROM posts WHERE distance <= ? AND type="${type}";`;
+    ))) AS distance FROM posts WHERE distance <= ? AND type="${type} ORDER BY distance ASC";`;
       db.all(query, [ref_lat, ref_lat,ref_long,searchRadius], (err, rows) => {
         if (err) {
           reject(err);

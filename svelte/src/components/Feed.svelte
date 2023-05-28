@@ -6,12 +6,26 @@ import { createEventDispatcher, onDestroy } from 'svelte';
 import Topbar from './Topbar.svelte';
 let result = [];
 let radius = 100;
-let mylat = 51.51337312257464;
-let mylong =  -0.0899854302406311;
+export let mylat;
+export let mylong;
 $: radius,fetchPosts(radius);
 onMount(async () => {
   //fetchPosts();
 });
+onMount(async () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          mylat = position.coords.latitude;
+          mylong = position.coords.longitude;
+          fetchPosts(20);
+        });
+    }else {
+      mylat = 9.1748;
+      mylong =  76.5013;
+      fetchPosts(20);
+    }
+  });
 const fetchPosts = async (radius) =>{
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -36,7 +50,7 @@ const close = () => dispatch('close');
 <div class="scrollwindow" in:fly="{{ y: 100, duration: 300 }}" out:fly="{{ x: -100, duration: 300 }}">
 <div id="topbar">
 <Topbar on:close={close}>Explore</Topbar>
-<input type="number" name="SearchRadius" min="10" max="5000" bind:value={radius}>
+<input type="number" name="SearchRadius" min="10" max="10000" bind:value={radius}>
 </div>
 {#if result.length > 0}
     {#each result as data}
@@ -83,7 +97,7 @@ input[type=number]{
     /* content: 'km'; */
     box-shadow: inset 0px 0px 5px 0px #0000004a;
 }
-input[type=number]::after{
+input[type=number] ::after{
   content: 'KM';
 }
 </style>

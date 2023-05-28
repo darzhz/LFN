@@ -2,7 +2,7 @@
   export let email = "Darsh"
   export let username = "@Dev.One"
   import { fly } from 'svelte/transition';
-  import { createEventDispatcher, onDestroy } from 'svelte';
+  import { createEventDispatcher, onDestroy, onMount } from 'svelte';
   import { user,isLoggedIn } from '../store.js';
 let dispatch = createEventDispatcher();
 const close = () => dispatch('close');
@@ -13,7 +13,16 @@ const close = () => dispatch('close');
     isLoggedIn.update((prev) => prev = !prev);
     close();
   }
+  const checkLogin = async () => {
+    const res = await fetch('/checkLogin');
+    let result = await res.json();
+    if(result.status=="UNAUTHENTICATED")
+      logout();
+  }
   let link = "https://api.dicebear.com/6.x/notionists/svg?seed="+username;
+  onMount(()=>{
+    checkLogin();
+  })
 </script>
 <div class="card" in:fly>
   <div class="img-avatar">

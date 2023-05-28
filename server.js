@@ -26,6 +26,7 @@ app.use('/posts',require('./routes/post.js'));
 app.use('/register',require('./routes/register.js'));
 app.use('/login',require('./routes/login.js'));
 app.use('/logout',require('./routes/logout.js'));
+app.use('/checkLogin',require('./routes/checkLogin.js'));
 app.use('/messages',require('./routes/messages.js'));
 model.createTable()
 app.listen(8080 ,() => {

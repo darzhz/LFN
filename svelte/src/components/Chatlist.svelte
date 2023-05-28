@@ -56,7 +56,7 @@
           {data.username}
         </div>
         <div class="message">
-          {data.message}  post#{data.pid}🇺🇸🍑
+          {data.message}  post#{data.pid}
         </div>
       </div>
     {/each}

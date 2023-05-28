@@ -6,8 +6,9 @@
   	let map;
 	let stamen = 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png';
   let carto = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png';
-  let mylat = 51.51337312257464;
-  let mylong =  -0.0899854302406311;
+  let light = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png';
+  let mylat;
+  let mylong;
   let markers = [];
   let result = [];
   const fetchPosts = async (radius) =>{
@@ -39,12 +40,24 @@
     });
   }
 }
-onMount(() => {
-    map = createMap('map-container');
-    fetchPosts(20);
+onMount(async () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          mylat = position.coords.latitude;
+          mylong = position.coords.longitude;
+          map =  createMap('map-container');
+          fetchPosts(20);
+        });
+    }else {
+      mylat = 9.1748;
+      mylong =  76.5013;
+      map = createMap('map-container');
+      fetchPosts(20);
+    }
   });
 
-  function createMap(containerId) {
+ function createMap(containerId) {
     let m = L.map(containerId).setView([mylat, mylong], 13);
     L.tileLayer(carto, {
       minZoom: 0,
@@ -65,7 +78,7 @@ onMount(() => {
 <div id="indicator">
   <small>{Math.round(mylat * 100) / 100},{Math.round(mylong * 100) / 100}</small>
 </div>
-<div id="map-container" style="height: 100vh; width: 100vw;"></div>
+<div id="map-container" style="height: 100%; width: 100vw;position: absolute;"></div>
 </div>
 <style type="text/css">
   #indicator {

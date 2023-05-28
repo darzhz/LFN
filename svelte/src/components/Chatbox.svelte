@@ -2,11 +2,13 @@
   import { onMount } from 'svelte';
   import Topbar from './Topbar.svelte';
   import { fly } from 'svelte/transition';
+   import * as animateScroll from "svelte-scrollto";
   export let pid = 10;
   export let chatee = 'roomie';
   let typed = '';
   let chat;
   let result = [];
+  $: animateScroll.scrollToBottom();
   const fetchChat = async () =>{
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -24,6 +26,17 @@
   result = await res.json();
 }
 onMount(async () => {
+  animateScroll.setGlobalOptions({
+  offset: 200,
+  container: chat,
+  onStart: (element, offset) => {
+    if(element) {
+      console.log("Start scrolling to element:", element);
+    } else if(offset) {
+      console.log("Start scrolling to page offset: (${offset.x}, ${offset.y})");
+    }
+  }
+})
   fetchChat();
 });
 const sendMessage = async () =>{
@@ -51,9 +64,9 @@ const sendMessage = async () =>{
       if(message.status == "UNAUTHENTICATED")
         dispatch('loginrequired');
     }
-    chat.scrollTo(0,chat.scrollHeight);
 }
 let link = "https://api.dicebear.com/6.x/notionists/svg?seed="+chatee;
+setInterval(fetchChat,1000);
   </script>
   <Topbar on:close>Chat</Topbar>
   <div id="chatboxContainer" in:fly>
@@ -69,7 +82,7 @@ let link = "https://api.dicebear.com/6.x/notionists/svg?seed="+chatee;
      {#if result.length > 0}
     <div class="messages" id="chat" bind:this={chat} in:fly out:fly>
       <div class="time">
-        Conversation Started at {result[0].timestamp}
+        Conversation Started at {new Date(result[0].timestamp)}
       </div>
         {#each result as data}
           {#if data.type=="outgoing"}
@@ -150,7 +163,7 @@ body, html {
 .chat .messages {
   /*padding: 1rem; */
     width: 80vw;
-    height: 60vh;
+    height: 57vh;
     background: #F7F7F7;
     flex-shrink: 2;
     overflow-y: auto;
@@ -235,7 +248,7 @@ body, html {
     background-image: none;
     background-color: white;
     padding: 0.5rem 1rem;
-    margin-right: 1rem;
+    margin-right: 0.2rem;
     border-radius: 1.125rem;
     flex-grow: 2;
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1), 0rem 1rem 1rem -1rem rgba(0, 0, 0, 0.2);

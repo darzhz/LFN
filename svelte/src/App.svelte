@@ -36,6 +36,12 @@
 <svelte:head>
   <title>LFN</title>
  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+ <meta name="viewport" content="height=device-height, 
+                      width=device-width, initial-scale=1.0, 
+                      minimum-scale=1.0, maximum-scale=1.0, 
+                      user-scalable=no, target-densitydpi=device-dpi">
+  <meta name="theme-color" content="#BA97FB">
+
 </svelte:head>
 <main>
 	{#if showMap}
@@ -123,13 +129,17 @@
 	font:inherit;
 }
 	:global(body){
-	min-height:100dvh;
+	min-height: 100vh;
+  min-height: -webkit-fill-available;
 	margin: 0;
 	padding: 0;
 	background-color: transparent;
 	background-position: center;
 	background-size: cover;
 }
+	:global(html){
+		height: -webkit-fill-available;
+	}
 #navi{
 	background: #ffffff;
     border-radius: 15px;

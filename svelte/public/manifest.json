@@ -1,0 +1,40 @@
+{
+  "background_color": "#000000",
+  "description": "THE LOST AND FOUND NETWORK.find everything",
+  "dir": "ltr",
+  "display": "fullscreen",
+  "name": "Lost And Found Network",
+  "orientation": "portrait",
+  "scope": "/",
+  "short_name": "LFN",
+  "start_url": "/",
+  "theme_color": "#ba97fb",
+  "categories": [
+    "entertainment",
+    "navigation",
+    "photo",
+    "shopping",
+    "utilities"
+  ],
+  "screenshots": [],
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "type": "image/png",
+      "sizes": "500x500"
+    },
+    {
+      "src": "/favicon.ico",
+      "type": "image/x-icon"
+    }
+  ],
+  "shortcuts": [],
+  "display_override": [
+    "fullscreen",
+    "standalone",
+    "minimal-ui",
+    "window-controls-overlay",
+    "browser"
+  ],
+  "prefer_related_applications": false
+}
