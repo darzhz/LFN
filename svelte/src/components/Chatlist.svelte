@@ -48,7 +48,7 @@
     fetchChat();
   });
   const clickedProfile = (username,pid) =>{
-    dispatch('open',{username,pid})
+    dispatch('open',{username,pid});
   }
   let link = "https://api.dicebear.com/6.x/notionists/svg?seed=";
 </script>

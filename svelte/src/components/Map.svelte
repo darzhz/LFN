@@ -7,8 +7,8 @@
 	let stamen = 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png';
   let carto = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png';
   let light = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png';
-  let mylat;
-  let mylong;
+  export let mylat;
+  export let mylong;
   let markers = [];
   let result = [];
   const fetchPosts = async (radius) =>{

@@ -11,9 +11,10 @@
 		pid = event.detail.pid
 		showChatbox = true;
 	}
+	console.log('showChatbox :'+showChatbox);
 </script>
 	{#if showChatbox}
-	<Chatbox chatee={user} pid={pid} on:close={()=>showChatbox = false}/>
+	<Chatbox chatee={user} pid={pid} on:close={()=>{showChatbox = false}}/>
 	{:else}
 	<Chatlist on:close on:open={handleOpen} on:loginrequired/>
 	{/if}	

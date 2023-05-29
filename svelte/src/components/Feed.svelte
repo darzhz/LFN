@@ -6,27 +6,29 @@ import { createEventDispatcher, onDestroy } from 'svelte';
 import Topbar from './Topbar.svelte';
 let result = [];
 let radius = 100;
-let mylat;
-let mylong;
-$: radius,fetchPosts(radius);
+export let mylat;
+export let mylong;
+$: radius,fetchPosts(radius,mylat.mylong);
+
+// onMount(async () => {
+//   fetchPosts(radius,mylat,mylong);
+// });
 onMount(async () => {
-  //fetchPosts();
-});
-onMount(async () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          mylat = position.coords.latitude;
-          mylong = position.coords.longitude;
-          fetchPosts(20);
-        });
-    }else {
-      mylat = 9.1748;
-      mylong =  76.5013;
-      fetchPosts(20);
-    }
+    // if (navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition(
+    //     (position) => {
+    //       mylat = position.coords.latitude;
+    //       mylong = position.coords.longitude;
+    //       fetchPosts(radius,mylat,mylong);
+    //     });
+    // }else {
+    //   mylat = 9.1748;
+    //   mylong =  76.5013;
+    //   fetchPosts(radius,mylat,mylong);
+    // }
+  fetchPosts(radius,mylat,mylong);
   });
-const fetchPosts = async (radius) =>{
+const fetchPosts = async (radius,mylat,mylong) =>{
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   let raw = JSON.stringify({

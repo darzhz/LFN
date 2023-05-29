@@ -1,7 +1,7 @@
   <script>
   import { onMount,afterUpdate } from 'svelte';
   import Topbar from './Topbar.svelte';
-  import { fly } from 'svelte/transition';
+  import { fly,scale } from 'svelte/transition';
   export let pid = 10;
   export let chatee = 'roomie';
   let typed = '';
@@ -62,7 +62,7 @@ const scrollChatToBottom = () => {
   }
   </script>
   <Topbar on:close>Chat</Topbar>
-  <div id="chatboxContainer" in:fly>
+  <div id="chatboxContainer" in:scale out:scale>
   <div class="chat">
     <div class="contactbar">
       <div class="pic inco">
@@ -73,7 +73,7 @@ const scrollChatToBottom = () => {
       </div>
     </div>
      {#if result.length > 0}
-    <div class="messages" id="chat" bind:this={chat} in:fly out:fly>
+    <div class="messages" id="chat" bind:this={chat}>
       <div class="time">
         Conversation Started at {new Date(result[0].timestamp)}
       </div>

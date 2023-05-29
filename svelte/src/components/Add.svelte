@@ -173,6 +173,7 @@ input[type=text], textarea {
     border-radius: 15px;
     background-color: #ffffff;
     box-shadow: 0 4px 6px rgba(32,33,36,.28);
+    margin-top: 10px;
 }
 input[type=file] {
 	  width: 95%;

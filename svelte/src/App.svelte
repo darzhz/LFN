@@ -10,27 +10,30 @@
 		showAdd:false,
 		feed:false,
 		showAcc:false,
-		showChat:false
+		showChat:false,
+		showInstantChat:false
 	}
 	$:showMap = toggle['showMap'];
 	$:showAdd= toggle['showAdd'];
 	$:feed  = toggle['feed'];
 	$:showAcc = toggle['showAcc'];
 	$:showChat = toggle['showChat'];
+	$:showInstantChat = toggle['showInstantChat']
 	const handleViewChange = (elem) =>{
 		console.log(toggle);
 		let arr = Object.keys(toggle);
 		arr.forEach((x) =>(toggle[x] = false))
 		toggle[elem] = true;
 	}
-	let showInstantChat = false;
 	let Iuser = null;
 	let Ipid = null;
+	let mylat;
+	let mylong;
 	const handleOpen = (event) => {
-		feed = false;
 		Iuser = event.detail.username;
 		Ipid = event.detail.pid
-		showInstantChat = true;
+		handleViewChange('showInstantChat');
+		console.log('ichat is shown');
 	}
 </script>
 <svelte:head>
@@ -45,10 +48,10 @@
 </svelte:head>
 <main>
 	{#if showMap}
-	<Map/>
+	<Map bind:mylat bind:mylong/>
 	{/if}
 	{#if feed}
-	<Feed on:close="{() =>{ toggle['feed'] = false;toggle['showMap'] = true}}" on:instantChat={handleOpen}/>
+	<Feed on:close="{() =>{ toggle['feed'] = false;toggle['showMap'] = true}}" on:instantChat={handleOpen} mylat={mylat} mylong={mylong}/>
 	{/if}
 	{#if showAdd}
 	<Add on:close="{() =>{ toggle['showAdd'] = false;toggle['showMap'] = true}}" on:loginrequired="{() => handleViewChange('showAcc')}"/>
@@ -60,7 +63,7 @@
 	<Chat on:close="{() =>{ toggle['showChat'] = false;toggle['showMap'] = true}}" on:loginrequired="{() => handleViewChange('showAcc')}"/>
 	{/if}
 	{#if showInstantChat}
-	<InstantChat chatee={Iuser} pid={Ipid} on:close="{() =>{ showInstantChat = false;toggle['showMap'] = true}}" on:loginrequired="{() => handleViewChange('showAcc')}"/>
+	<InstantChat chatee={Iuser} pid={Ipid} on:close="{() =>{ toggle['showInstantChat'] = false;toggle['showMap'] = true}}" on:loginrequired="{() => handleViewChange('showAcc')}"/>
 	{/if}
 </main>
 <div id="navi">
