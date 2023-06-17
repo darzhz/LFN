@@ -5,8 +5,8 @@
 	let selected;
 	let files;
 	let type;
-	let lat;
-	let long;
+	export let lat;
+	export let long;
 	let images = [];
 	import Minimap from './Minimap.svelte';
 	import { fade,fly,scale } from 'svelte/transition';
@@ -114,10 +114,10 @@ arrow_back_ios
     </div>
   </div>
   <div id="setMap">
-  <Minimap on:markerSet={handleMarkerSet} {lat} {long}/>
+  <Minimap on:markerSet={handleMarkerSet} lat={lat} long={long}/>
   <div>
   <p>Currently set :<br>lat : {Math.round(lat)},<br>long : {Math.round(long)}</p>
-  <button on:click={useCurrentLocation}>Use Current GPS loaction</button>
+  <button on:click|preventDefault={useCurrentLocation}>Use Current GPS loaction</button>
   </div>
   </div>
   <br>

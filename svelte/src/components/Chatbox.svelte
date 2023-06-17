@@ -1,5 +1,5 @@
   <script>
-  import { onMount,afterUpdate } from 'svelte';
+  import { onMount,afterUpdate,onDestroy } from 'svelte';
   import Topbar from './Topbar.svelte';
   import { fly,scale } from 'svelte/transition';
   export let pid = 10;
@@ -54,7 +54,10 @@ const sendMessage = async () =>{
     }
 }
 let link = "https://api.dicebear.com/6.x/notionists/svg?seed="+chatee;
-setInterval(fetchChat,1000);
+let interv = setInterval(fetchChat,1000);
+onDestroy(()=>{
+  clearInterval(interv);
+})
 const scrollChatToBottom = () => {
     if (chat) {
       chat.scrollTop = chat.scrollHeight;

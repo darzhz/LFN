@@ -70,11 +70,32 @@
         </div>
       </div>
     {/each}
+    {:else}
+      <div id="alone">
+      <center>It appears that you're lonely</center>
+      </div>
+
     {/if}
   </div>
   </div>
 <style>
-
+#alone {
+    z-index: 1;
+    margin-top: 16vh;
+    background-image: url(/images/alone.png);
+    background-position: center;
+    height: 300px;
+    background-size: cover;
+    width: 300px;
+    text-align: center;
+    vertical-align: middle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 55%;
+    box-shadow: 1px 1px 1px var(--tri);
+    color: var(--tri);
+}
 .pic {
   width: 4rem;
   height: 4rem;

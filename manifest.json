@@ -1,0 +1,39 @@
+{
+  "background_color": "#ffffff",
+  "description": "find your things with community help",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Lost And Found Network",
+  "orientation": "portrait",
+  "scope": "/",
+  "short_name": "LFN",
+  "start_url": "/",
+  "theme_color": "#cb96fc",
+  "categories": [
+    "navigation",
+    "productivity",
+    "security",
+    "travel",
+    "utilities"
+  ],
+  "screenshots": ["/images/src1.png"],
+  "icons": [
+    {
+      "src": "/images/favicon.png",
+      "type": "image/png",
+      "sizes": "500x500"
+    },
+    {
+      "src": "/images/favicon.ico",
+      "type": "image/x-icon"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "home",
+      "url": "/",
+      "description": "Map"
+    }
+  ],
+  "lang": "en"
+}

@@ -18,6 +18,7 @@ arrow_back_ios
     padding-left: 10px;
     padding-top: 10px;
     color: var(--tri);
+    user-select: none;
 }
 #title{
     position: absolute;
@@ -29,5 +30,6 @@ arrow_back_ios
     margin-right: auto;
     font-family: poppins,sans-serif;
     color: var(--tri);
+    user-select: none;
 }
 </style>

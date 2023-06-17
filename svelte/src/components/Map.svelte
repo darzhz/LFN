@@ -1,12 +1,13 @@
 <script>
-	import * as L from 'leaflet';
+	import * as L from 'leaflet/dist/leaflet.js';
   	import 'leaflet/dist/leaflet.css';
-    import { onMount } from 'svelte';
+    import { onMount,onDestroy } from 'svelte';
     import { scale } from 'svelte/transition';
   	let map;
 	let stamen = 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png';
   let carto = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png';
   let light = 'https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png';
+  let regular = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
   export let mylat;
   export let mylong;
   let markers = [];
@@ -63,10 +64,13 @@ onMount(async () => {
       fetchPosts(20);
     }
   });
+onDestroy(async () =>{
+  map = null;
+})
 
  function createMap(containerId) {
     let m = L.map(containerId).setView([mylat, mylong], 13);
-    L.tileLayer(carto, {
+    L.tileLayer(light, {
       minZoom: 0,
       maxZoom: 16,
     }).addTo(m);

@@ -5,6 +5,7 @@ const model = require("./model/db");
 const path = require("path");
 const session = require("express-session");
 const SQLiteStore = require('connect-sqlite3')(session);
+const compression = require('compression');
 
 app.use(session({
   secret: 'your-secret-key',
@@ -16,6 +17,7 @@ app.use(session({
     table: 'sessions'
   })
 }));
+app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 const build = path.join(__dirname, "svelte/public");

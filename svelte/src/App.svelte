@@ -54,7 +54,7 @@
 	<Feed on:close="{() =>{ toggle['feed'] = false;toggle['showMap'] = true}}" on:instantChat={handleOpen} mylat={mylat} mylong={mylong}/>
 	{/if}
 	{#if showAdd}
-	<Add on:close="{() =>{ toggle['showAdd'] = false;toggle['showMap'] = true}}" on:loginrequired="{() => handleViewChange('showAcc')}"/>
+	<Add on:close="{() =>{ toggle['showAdd'] = false;toggle['showMap'] = true}}" on:loginrequired="{() => handleViewChange('showAcc')}"  lat={mylat} long={mylong}/>
 	{/if}
 	{#if showAcc}
 	<Acc on:close="{() =>{ toggle['showAcc'] = false;toggle['showMap'] = true}}"/>
@@ -142,6 +142,7 @@
 }
 	:global(html){
 		height: -webkit-fill-available;
+		font-family: 'Poppins', sans-serif;
 	}
 #navi{
 	background: #ffffff;
@@ -156,6 +157,7 @@
     right: 0;
     position: fixed;
     z-index: 1000;
+    user-select: none;
 }
 ul{
 

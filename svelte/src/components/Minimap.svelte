@@ -1,6 +1,6 @@
 <script>
   import { onMount,createEventDispatcher } from 'svelte';
-  import * as L from 'leaflet';
+  import * as L from 'leaflet/dist/leaflet.js';
   import 'leaflet/dist/leaflet.css';
   let map;
   let marker;
@@ -9,7 +9,10 @@
   const dispatch = createEventDispatcher();
   onMount(() => {
     // Initialize the map and set the view
-    map = L.map(map).setView([51.505, -0.09], 13);
+    if(isNaN(lat))
+      map = L.map(map).setView([51.505, -0.09], 13);
+    else 
+      map = L.map(map).setView([lat, long], 13);
 
     // Add tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

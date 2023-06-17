@@ -64,6 +64,12 @@
     margin: 0 5px;
     padding: 5px 10px;
     color:white;
+    user-select: none;
   }
+  @media (min-width: 1024px) {
+  .carousel img {
+    width: 50vw;
+  }
+}
 </style>
 
