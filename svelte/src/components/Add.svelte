@@ -9,6 +9,7 @@
 	export let long;
 	let images = [];
 	import Minimap from './Minimap.svelte';
+  import Topbar from './Topbar.svelte';
 	import { fade,fly,scale } from 'svelte/transition';
 	import { createEventDispatcher, onDestroy } from 'svelte';
   import { onMount } from 'svelte';
@@ -75,12 +76,7 @@
   }
 </script>
 <div in:scale out:scale>
-  <div class="topMenu">
-	<div class="back" on:click={close}><span class="material-symbols-rounded">
-arrow_back_ios
-</span></div>
-  <div id="title">New Post</div>
-</div>
+<Topbar on:close >New Post</Topbar>
 <div class="container1">
 	<form   on:submit|preventDefault={handleSubmit}>
 		<div class="container">
@@ -196,7 +192,7 @@ input[type=submit] {
     border-radius: 8px;
     cursor: pointer;
     width: 97px;
-    margin-bottom: 70px;
+    margin-bottom: 100px;
 }
 input::placeholder{
   color: var(--tri);
@@ -225,7 +221,7 @@ input::file-selector-button {
     border-radius: 13px;
     background-color: var(--tri);
 }
-#fname,#insta{
+#fname{
   text-align: center;
 }
 .container {

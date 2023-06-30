@@ -2,7 +2,7 @@
 	import * as L from 'leaflet/dist/leaflet.js';
   	import 'leaflet/dist/leaflet.css';
     import { onMount,onDestroy } from 'svelte';
-    import { scale } from 'svelte/transition';
+    import { scale, slide } from 'svelte/transition';
   	let map;
 	let stamen = 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png';
   let carto = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png';
@@ -85,7 +85,7 @@ onDestroy(async () =>{
     return m;
   }
 </script>
-<div in:scale out:scale>
+<div>
 <div id="indicator">
   <small>{Math.round(mylat * 100) / 100},{Math.round(mylong * 100) / 100}</small>
 </div>
